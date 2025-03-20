@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const { secret, expiresIn } = require('../config/jwt');
 
 // Register a new user
 const register = async (req, res) => {
@@ -17,12 +18,11 @@ const register = async (req, res) => {
     const user = new User({ email, password, firstName, lastName });
     await user.save();
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+    // Generate JWT token using the saved user's id
+    const token = jwt.sign({ userId: user._id }, secret, { expiresIn });
     res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json({ message: 'Something went wrong' });
+    res.status(500).json({ message: `Something went wrong ${err}` });
   }
 };
 
@@ -43,9 +43,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+    // Generate JWT token using the found user's id
+    const token = jwt.sign({ userId: user._id }, secret, { expiresIn });
     res.json({ token });
   } catch (err) {
     res.status(500).json({ message: 'Something went wrong' });
