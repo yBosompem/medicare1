@@ -1,2 +1,6 @@
 .env
 node_modules/
+# Configuration files
+config/db.js
+config/jwt.js
+config/env.js
