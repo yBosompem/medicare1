@@ -20,7 +20,16 @@ const register = async (req, res) => {
 
     // Generate JWT token using the saved user's id
     const token = jwt.sign({ userId: user._id }, secret, { expiresIn });
-    res.status(201).json({ token });
+    res.status(201).json({
+      token,
+        user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+     });
   } catch (err) {
     res.status(500).json({ message: `Something went wrong ${err}` });
   }
@@ -45,7 +54,18 @@ const login = async (req, res) => {
 
     // Generate JWT token using the found user's id
     const token = jwt.sign({ userId: user._id }, secret, { expiresIn });
-    res.json({ token });
+    res.json({
+      token,
+          user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+
+     });
+
   } catch (err) {
     res.status(500).json({ message: 'Something went wrong' });
   }
